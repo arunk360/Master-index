@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kherinews24 | ताज़ा खबरें</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --header-bg: #ffffff;
+            --nav-bg: #002e5b;
+            --card-bg: #ffffff;
+            --border-color: #ddd;
+            --accent-color: #ce0000;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --header-bg: #1e1e1e;
+            --nav-bg: #000000;
+            --card-bg: #1e1e1e;
+            --border-color: #333;
+        }
+
+        body { transition: 0.3s; background-color: var(--bg-color); color: var(--text-color); margin: 0; font-family: Arial, sans-serif; }
+        header { background: var(--header-bg); padding: 15px 10%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--nav-bg); }
+        .logo { font-size: 28px; font-weight: 900; color: var(--nav-bg); text-decoration: none; }
+        .logo span { color: var(--accent-color); }
+        .visual-btn { background: var(--accent-color); color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 20px; font-weight: bold; }
+
+        nav { background: var(--nav-bg); display: flex; justify-content: center; overflow-x: auto; }
+        nav a { color: white; padding: 15px; text-decoration: none; font-weight: bold; white-space: nowrap; }
+
+        #live-clock { background: #eee; padding: 8px 10%; font-size: 14px; text-align: center; border-bottom: 1px solid #ddd; color: #333; }
+
+        .breaking-container { display: flex; align-items: center; background: var(--accent-color); color: white; text-decoration: none; border-bottom: 2px solid #900; }
+        .breaking-label { background: #fff; color: var(--accent-color); padding: 10px 15px; font-weight: 900; display: flex; align-items: center; }
+        .scrolling-text { flex-grow: 1; font-weight: bold; font-size: 16px; }
+
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 15px; }
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: var(--card-bg); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid var(--border-color); transition: transform 0.2s; height: 100%; display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-3px); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-content { padding: 15px; flex-grow: 1; }
+        .card-content h3 { margin: 10px 0; font-size: 1.2rem; color: var(--text-color); }
+        .card-content a { text-decoration: none; color: inherit; }
+        .card-content h3:hover { color: var(--accent-color); }
+        .read-more { display: inline-block; margin-top: auto; color: var(--nav-bg); font-weight: bold; text-decoration: none; padding-top: 10px; }
+
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .alert-dot { height: 10px; width: 10px; background: red; border-radius: 50%; margin-right: 8px; animation: blink 1s infinite; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">KHERI<span>NEWS24</span></a>
+        <button class="visual-btn" onclick="toggleTheme()" id="themeBtn">Visual: Dark Mode</button>
+    </header>
+
+    <nav>
+        <a href="index.html">होम</a>
+        <a href="up-politics.html">उत्तर प्रदेश</a>
+        <a href="#">खीरी विशेष</a>
+        <a href="rojgar.html">रोजगार</a>
+        <a href="sports.html">खेल & प्रतियोगिता</a>
+    </nav>
+
+    <div id="live-clock">लोड हो रहा है...</div>
+
+    <a href="breaking-news.html" class="breaking-container">
+        <div class="breaking-label">
+            <span class="alert-dot"></span> FLASH NEWS
+        </div>
+        <div class="scrolling-text">
+            <marquee behavior="scroll" direction="left" scrollamount="8">
+                🚨 बड़ी खबर: लखीमपुर खीरी कचहरी परिसर में वकीलों के दो गुटों में चली गोली, एक अधिवक्ता घायल... पूरी खबर यहाँ पढ़ें 🚨
+            </marquee>
+        </div>
+    </a>
+
+    <div class="container">
+        <div class="news-grid" id="news-grid"></div>
+    </div>
+
+    <script>
+        // --- 1. न्यूज़ डेटा एरे (साफ़ सुथरा डेटा) ---
+        const newsArray = [
+            {
+                title: "दुधवा नेशनल पार्क में बाघों का कुनबा बढ़ा, पर्यटकों में उत्साह",
+                category: "वन्यजीव",
+                categoryColor: "#28a745",
+                image: "https://images.unsplash.com/photo-1502429892517-f26362d7c17d?q=80&w=400&h=200&fit=crop",
+                description: "दुधवा टाइगर रिजर्व में हाल ही में बाघों की संख्या में बढ़ोत्तरी देखी गई है।",
+                link: "#"
+            },
+            {
+                title: "लखीमपुर-सीतापुर फोरलेन पर सड़क हादसा, दो घायल",
+                category: "दुर्घटना",
+                categoryColor: "red",
+                image: "https://images.unsplash.com/photo-1518084451403-1250f2425501?q=80&w=400&h=200&fit=crop",
+                description: "तेज रफ्तार ट्रक ने बाइक को मारी टक्कर, घायलों को जिला अस्पताल में भर्ती कराया गया है।",
+                link: "#"
+            },
+            {
+                title: "खीरी के किसानों के लिए राहत: गन्ने के भुगतान में आई तेजी",
+                category: "किसान",
+                categoryColor: "#2ecc71",
+                image: "Kisan.png",
+                description: "चीनी मिलों ने बकाया गन्ना भुगतान की प्रक्रिया तेज कर दी है, जिससे किसानों के चेहरे खिले।",
+                link: "kisan.html"
+            },
+            {
+                title: "कचहरी परिसर सुरक्षा कड़ी: पुलिस ने बढ़ाया पहरा",
+                category: "प्रशासन",
+                categoryColor: "#34495e",
+                image: "https://via.placeholder.com/400x200",
+                description: "हालिया विवाद के बाद कचहरी परिसर में हर आने-जाने वाले की सघन चेकिंग की जा रही है।",
+                link: "breaking-news.html"
+            },
+            {
+                title: "लखीमपुर शहर में जलभराव की समस्या, नगर पालिका अलर्ट",
+                category: "शहर",
+                categoryColor: "#007bff",
+                image: "https://images.unsplash.com/photo-1516912403145-636ad58d518d?q=80&w=400&h=200&fit=crop",
+                description: "मानसून से पहले नालों की सफाई का काम तेज, जिलाधिकारी ने दिए कड़े निर्देश।",
+                link: "#"
+            },
+            {
+                title: "डीएम दुर्गा शक्ति नागपाल का औचक निरीक्षण, नदारद मिले कर्मचारी",
+                category: "प्रशासन",
+                categoryColor: "#e67e22",
+                image: "https://via.placeholder.com/400x200",
+                description: "विकास भवन में छापेमारी के दौरान कई अधिकारी अनुपस्थित पाए गए।",
+                link: "#"
+            },
+            {
+                title: "शारदा नदी का जलस्तर बढ़ा, तटीय गांवों में अलर्ट जारी",
+                category: "अलर्ट",
+                categoryColor: "#e74c3c",
+                image: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?q=80&w=400&h=200&fit=crop",
+                description: "पहाड़ों पर बारिश के कारण शारदा नदी उफान पर, प्रशासन ने अलर्ट जारी किया।",
+                link: "#"
+            },
+            {
+                title: "लखीमपुर के युवा खिलाड़ी का राज्य स्तरीय क्रिकेट में चयन",
+                category: "खेल",
+                categoryColor: "#9b59b6",
+                image: "https://images.unsplash.com/photo-1531415074941-6ef21368a594?q=80&w=400&h=200&fit=crop",
+                description: "जिले के प्रतिभावान क्रिकेटर का चयन यूपी की अंडर-19 टीम के ट्रायल के लिए हुआ।",
+                link: "sports.html"
+            },
+            {
+                title: "लखीमपुर महोत्सव की तैयारी शुरू, सजने लगा मैदान",
+                category: "सांस्कृतिक",
+                categoryColor: "#f1c40f",
+                image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=400&h=200&fit=crop",
+                description: "इस बार महोत्सव में स्थानीय कलाकारों को मिलेगा बड़ा मंच।",
+                link: "#"
+            },
+            {
+                title: "स्वास्थ्य विभाग की बड़ी कार्रवाई, 3 अवैध अस्पताल सील",
+                category: "स्वास्थ्य",
+                categoryColor: "#1abc9c",
+                image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=400&h=200&fit=crop",
+                description: "बिना रजिस्ट्रेशन चल रहे नर्सिंग होम पर स्वास्थ्य विभाग ने मारा छापा।",
+                link: "#"
+            }
+        ];
+
+        // --- 2. न्यूज़ दिखाने का फंक्शन ---
+        function renderNews() {
+            const newsGrid = document.getElementById('news-grid');
+            if(!newsGrid) return;
+            
+            newsGrid.innerHTML = newsArray.map(news => `
+                <div class="card">
+                    <img src="${news.image}" alt="${news.title}" onerror="this.src='https://via.placeholder.com/400x200?text=News+Image'">
+                    <div class="card-content">
+                        <span style="color:${news.categoryColor}; font-size:12px; font-weight:bold;">${news.category}</span>
+                        <h3><a href="${news.link}">${news.title}</a></h3>
+                        <p>${news.description}</p>
+                        <a href="${news.link}" class="read-more">पूरा पढ़ें →</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- 3. थीम और घड़ी के फंक्शन्स ---
+        function toggleTheme() {
+            const body = document.documentElement;
+            const isDark = body.getAttribute("data-theme") === "dark";
+            body.setAttribute("data-theme", isDark ? "light" : "dark");
+            document.getElementById("themeBtn").innerText = isDark ? "Visual: Dark Mode" : "Visual: Light Mode";
+            localStorage.setItem("theme", isDark ? "light" : "dark");
+        }
+
+        function updateClock() {
+            const clockEl = document.getElementById('live-clock');
+            if(!clockEl) return;
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            clockEl.innerHTML = now.toLocaleDateString('hi-IN', options) + " | " + now.toLocaleTimeString('hi-IN');
+        }
+
+        // पेज लोड होने पर सब शुरू करें
+        window.onload = () => {
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme === "dark") {
+                document.documentElement.setAttribute("data-theme", "dark");
+                document.getElementById("themeBtn").innerText = "Visual: Light Mode";
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+            renderNews();
+        };
+    </script>
+</body>
+</html>
